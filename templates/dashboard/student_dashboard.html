@@ -1,0 +1,150 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Student Dashboard - TSURI{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-md-12">
+                <h1><i class="bi bi-speedometer2"></i> Student Dashboard</h1>
+                <p class="text-muted">Welcome, {{ user.get_full_name }}</p>
+            </div>
+        </div>
+    </div>
+    
+    {% if student %}
+    <div class="row">
+        <div class="col-md-6 col-lg-3">
+            <div class="stats-card">
+                <i class="bi bi-building" style="font-size: 2rem; color: #3498db;"></i>
+                <div class="label">Current Class</div>
+                <div style="font-size: 1.5rem; font-weight: 600; color: #2c3e50; margin-top: 5px;">
+                    {{ student.current_class }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="stats-card">
+                <i class="bi bi-person-badge" style="font-size: 2rem; color: #27ae60;"></i>
+                <div class="label">Admission Number</div>
+                <div style="font-size: 1.5rem; font-weight: 600; color: #2c3e50; margin-top: 5px;">
+                    {{ student.admission_number }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="stats-card">
+                <i class="bi bi-calendar-check" style="font-size: 2rem; color: #e74c3c;"></i>
+                <div class="number">{{ attendance_count }}</div>
+                <div class="label">Days Present</div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="stats-card">
+                <i class="bi bi-file-earmark" style="font-size: 2rem; color: #f39c12;"></i>
+                <div class="number">{{ recent_results|length }}</div>
+                <div class="label">Grades Recorded</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-graph-up"></i> Recent Grades
+                </div>
+                <div class="card-body">
+                    {% if recent_results %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Term</th>
+                                    <th>Marks</th>
+                                    <th>Grade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for result in recent_results %}
+                                <tr>
+                                    <td>{{ result.subject }}</td>
+                                    <td>{{ result.term }}</td>
+                                    <td>{{ result.marks_obtained }}</td>
+                                    <td>
+                                        <span class="badge bg-info">{{ result.grade }}</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No grades recorded yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-info-circle"></i> Personal Information
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Date of Birth:</dt>
+                        <dd class="col-sm-8">{{ student.date_of_birth|date:"M d, Y" }}</dd>
+                        
+                        <dt class="col-sm-4">Gender:</dt>
+                        <dd class="col-sm-8">{{ student.get_gender_display }}</dd>
+                        
+                        <dt class="col-sm-4">Guardian:</dt>
+                        <dd class="col-sm-8">{{ student.guardian_name }}</dd>
+                        
+                        <dt class="col-sm-4">Guardian Phone:</dt>
+                        <dd class="col-sm-8">{{ student.guardian_phone }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-lightning"></i> Quick Actions
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'attendance:attendance_report' %}" class="btn btn-primary btn-sm me-2">
+                        <i class="bi bi-calendar-check"></i> View My Attendance
+                    </a>
+                    {% if student %}
+                    <a href="{% url 'academics:report_card' student.id %}" class="btn btn-success btn-sm me-2">
+                        <i class="bi bi-file-earmark"></i> View Report Card
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'students:student_detail' student.id %}" class="btn btn-info btn-sm">
+                        <i class="bi bi-person"></i> View My Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-warning" role="alert">
+                <i class="bi bi-exclamation-triangle"></i> Your student profile has not been set up yet. Please contact the admin.
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

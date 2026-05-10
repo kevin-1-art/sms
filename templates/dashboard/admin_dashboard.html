@@ -1,0 +1,106 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Admin Dashboard - TSURI{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-md-12">
+                <h1><i class="bi bi-speedometer2"></i> Admin Dashboard</h1>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6 col-lg-3">
+            <div class="stats-card">
+                <a href="{% url 'students:student_list' %}" style="text-decoration: none; color: inherit;">
+                    <i class="bi bi-people" style="font-size: 2rem; color: #3498db;"></i>
+                    <div class="number">{{ total_students }}</div>
+                    <div class="label">Total Students</div>
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="stats-card">
+                <a href="{% url 'teachers:teacher_list' %}" style="text-decoration: none; color: inherit;">
+                    <i class="bi bi-person-check" style="font-size: 2rem; color: #27ae60;"></i>
+                    <div class="number">{{ total_teachers }}</div>
+                    <div class="label">Total Teachers</div>
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="stats-card">
+                <a href="{% url 'academics:class_list' %}" style="text-decoration: none; color: inherit;">
+                    <i class="bi bi-building" style="font-size: 2rem; color: #e74c3c;"></i>
+                    <div class="number">{{ total_classes }}</div>
+                    <div class="label">Total Classes</div>
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="stats-card">
+                <a href="{% url 'academics:subject_list' %}" style="text-decoration: none; color: inherit;">
+                    <i class="bi bi-book" style="font-size: 2rem; color: #f39c12;"></i>
+                    <div class="number">{{ total_subjects }}</div>
+                    <div class="label">Total Subjects</div>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-graph-up"></i> Quick Actions
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="{% url 'students:student_create' %}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-plus-circle"></i> Add New Student
+                        </a>
+                        <a href="{% url 'teachers:teacher_create' %}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-plus-circle"></i> Add New Teacher
+                        </a>
+                        <a href="{% url 'academics:class_create' %}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-plus-circle"></i> Create New Class
+                        </a>
+                        <a href="{% url 'academics:subject_create' %}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-plus-circle"></i> Add New Subject
+                        </a>
+                        <a href="{% url 'academics:result_create' %}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-plus-circle"></i> Record Student Results
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-info-circle"></i> System Information
+                </div>
+                <div class="card-body">
+                    <p><strong>Welcome to TSURI</strong></p>
+                    <p class="text-muted">This is a comprehensive system for managing all aspects of your school including:</p>
+                    <ul class="text-muted">
+                        <li>Student and Teacher Management</li>
+                        <li>Class and Subject Organization</li>
+                        <li>Attendance Tracking</li>
+                        <li>Grade and Result Management</li>
+                        <li>Role-Based Access Control</li>
+                    </ul>
+                    <p class="text-muted"><small>Use the navigation menu on the left to access different modules.</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

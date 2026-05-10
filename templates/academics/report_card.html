@@ -1,0 +1,80 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Report Card - TSURI{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-md-12">
+                <h1><i class="bi bi-file-earmark"></i> Report Card</h1>
+                <p class="text-muted">{{ student.user.get_full_name }} - {{ student.current_class }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-3"><strong>Admission Number:</strong> {{ student.admission_number }}</div>
+                <div class="col-md-3"><strong>Class:</strong> {{ student.current_class }}</div>
+                <div class="col-md-3"><strong>Gender:</strong> {{ student.get_gender_display }}</div>
+                <div class="col-md-3"><strong>Date of Birth:</strong> {{ student.date_of_birth|date:"M d, Y" }}</div>
+            </div>
+            
+            {% for term, results in results_by_term.items %}
+            <div class="mb-4">
+                <h5>{{ term }}</h5>
+                {% if results %}
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Subject</th>
+                                <th>Marks (Out of 100)</th>
+                                <th>Grade</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in results %}
+                            <tr>
+                                <td>{{ result.subject }}</td>
+                                <td>{{ result.marks_obtained }}</td>
+                                <td>
+                                    {% if result.grade == 'A' %}
+                                        <span class="badge bg-success">A - Excellent</span>
+                                    {% elif result.grade == 'B' %}
+                                        <span class="badge bg-info">B - Good</span>
+                                    {% elif result.grade == 'C' %}
+                                        <span class="badge bg-warning">C - Average</span>
+                                    {% elif result.grade == 'D' %}
+                                        <span class="badge" style="background-color: #f39c12;">D - Below Avg</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">F - Fail</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ result.remarks|default:"-" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">No results recorded for this term.</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="mt-4 text-center">
+        <button onclick="window.print()" class="btn btn-outline-primary">
+            <i class="bi bi-printer"></i> Print Report Card
+        </button>
+        <a href="{% url 'dashboard:student_dashboard' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
+</div>
+{% endblock %}

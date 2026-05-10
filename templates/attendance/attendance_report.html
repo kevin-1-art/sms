@@ -1,0 +1,90 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Attendance Report - TSURI{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-md-8">
+                <h1><i class="bi bi-file-earmark"></i> Attendance Report</h1>
+            </div>
+        </div>
+    </div>
+    
+    {% if user.is_student %}
+        {% if attendance_records %}
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <i class="bi bi-calendar-check" style="font-size: 2rem; color: #27ae60;"></i>
+                    <div class="number">{{ attendance_records|length }}</div>
+                    <div class="label">Total Records</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    {% else %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-9">
+                    <select name="student" class="form-select">
+                        <option value="">All Students</option>
+                        {% for student in students %}
+                        <option value="{{ student.id }}" {% if request.GET.student == student.id|stringformat:"s" %}selected{% endif %}>
+                            {{ student.user.get_full_name }} - {{ student.admission_number }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-outline-primary w-100">Filter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="card">
+        <div class="card-body">
+            {% if attendance_records %}
+            <div class="table-responsive">
+                <table class="table table-hover table-sm">
+                    <thead>
+                        <tr>
+                            {% if not user.is_student %}<th>Student</th>{% endif %}
+                            <th>Date</th>
+                            <th>Subject</th>
+                            <th>Status</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in attendance_records %}
+                        <tr>
+                            {% if not user.is_student %}<td>{{ record.student.user.get_full_name }}</td>{% endif %}
+                            <td>{{ record.date|date:"M d, Y" }}</td>
+                            <td>{{ record.subject|default:"General" }}</td>
+                            <td>
+                                {% if record.status == 'Present' %}
+                                    <span class="badge bg-success">Present</span>
+                                {% elif record.status == 'Absent' %}
+                                    <span class="badge bg-danger">Absent</span>
+                                {% else %}
+                                    <span class="badge bg-warning">Leave</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ record.remarks|default:"-" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted text-center py-4">No attendance records found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

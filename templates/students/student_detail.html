@@ -1,0 +1,181 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{ student.user.get_full_name }} - TSURI{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-md-8">
+                <h1><i class="bi bi-person"></i> {{ student.user.get_full_name }}</h1>
+            </div>
+            <div class="col-md-4 text-end">
+                <a href="{% url 'students:student_edit' student.id %}" class="btn btn-sm btn-primary">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
+                <a href="{% url 'students:student_list' %}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-person-badge"></i> Student Information
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-5">Admission Number:</dt>
+                        <dd class="col-sm-7"><strong>{{ student.admission_number }}</strong></dd>
+                        
+                        <dt class="col-sm-5">Email:</dt>
+                        <dd class="col-sm-7">{{ student.user.email }}</dd>
+                        
+                        <dt class="col-sm-5">Current Class:</dt>
+                        <dd class="col-sm-7">
+                            {% if student.current_class %}
+                                <span class="badge bg-info">{{ student.current_class }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Not Assigned</span>
+                            {% endif %}
+                        </dd>
+                        
+                        <dt class="col-sm-5">Gender:</dt>
+                        <dd class="col-sm-7">{{ student.get_gender_display }}</dd>
+                        
+                        <dt class="col-sm-5">Date of Birth:</dt>
+                        <dd class="col-sm-7">{{ student.date_of_birth|date:"M d, Y" }}</dd>
+                        
+                        <dt class="col-sm-5">Age:</dt>
+                        <dd class="col-sm-7">{{ student.get_age }} years</dd>
+                        
+                        <dt class="col-sm-5">Admission Date:</dt>
+                        <dd class="col-sm-7">{{ student.admission_date|date:"M d, Y" }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-person-check"></i> Guardian Information
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-5">Guardian Name:</dt>
+                        <dd class="col-sm-7"><strong>{{ student.guardian_name }}</strong></dd>
+                        
+                        <dt class="col-sm-5">Phone:</dt>
+                        <dd class="col-sm-7">{{ student.guardian_phone }}</dd>
+                        
+                        <dt class="col-sm-5">Email:</dt>
+                        <dd class="col-sm-7">{{ student.guardian_email|default:"N/A" }}</dd>
+                        
+                        <dt class="col-sm-5">Address:</dt>
+                        <dd class="col-sm-7">{{ student.guardian_address }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="results-tab" data-bs-toggle="tab" data-bs-target="#results" type="button" role="tab">
+                        <i class="bi bi-graph-up"></i> Recent Grades
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="attendance-tab" data-bs-toggle="tab" data-bs-target="#attendance" type="button" role="tab">
+                        <i class="bi bi-calendar-check"></i> Attendance
+                    </button>
+                </li>
+            </ul>
+            
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="results" role="tabpanel">
+                    <div class="card border-top-0 rounded-0">
+                        <div class="card-body">
+                            {% if results %}
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Subject</th>
+                                            <th>Term</th>
+                                            <th>Marks</th>
+                                            <th>Grade</th>
+                                            <th>Year</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for result in results %}
+                                        <tr>
+                                            <td>{{ result.subject }}</td>
+                                            <td>{{ result.term }}</td>
+                                            <td>{{ result.marks_obtained }}</td>
+                                            <td><span class="badge bg-info">{{ result.grade }}</span></td>
+                                            <td>{{ result.academic_year }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <p class="text-muted text-center py-4">No grades recorded yet.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="attendance" role="tabpanel">
+                    <div class="card border-top-0 rounded-0">
+                        <div class="card-body">
+                            {% if attendance_records %}
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Subject</th>
+                                            <th>Status</th>
+                                            <th>Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for record in attendance_records %}
+                                        <tr>
+                                            <td>{{ record.date|date:"M d, Y" }}</td>
+                                            <td>{{ record.subject|default:"General" }}</td>
+                                            <td>
+                                                {% if record.status == 'Present' %}
+                                                    <span class="badge bg-success">{{ record.status }}</span>
+                                                {% elif record.status == 'Absent' %}
+                                                    <span class="badge bg-danger">{{ record.status }}</span>
+                                                {% else %}
+                                                    <span class="badge bg-warning">{{ record.status }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ record.remarks|default:"-" }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <p class="text-muted text-center py-4">No attendance records yet.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{ title }} - TSURI{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-md-8">
+                <h1><i class="bi bi-person-plus"></i> {{ title }}</h1>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <h5 class="mb-3">Basic Information</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_admission_number" class="form-label">Admission Number *</label>
+                                {{ form.admission_number }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_gender" class="form-label">Gender *</label>
+                                {{ form.gender }}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_date_of_birth" class="form-label">Date of Birth *</label>
+                                {{ form.date_of_birth }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_current_class" class="form-label">Current Class</label>
+                                {{ form.current_class }}
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <h5 class="mb-3">Guardian Information</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_guardian_name" class="form-label">Guardian Name *</label>
+                                {{ form.guardian_name }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_guardian_phone" class="form-label">Guardian Phone *</label>
+                                {{ form.guardian_phone }}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="id_guardian_email" class="form-label">Guardian Email</label>
+                                {{ form.guardian_email }}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_guardian_address" class="form-label">Guardian Address *</label>
+                            {{ form.guardian_address }}
+                        </div>
+                        
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ form.non_field_errors }}
+                        </div>
+                        {% endif %}
+                        
+                        <div class="d-grid gap-2 d-sm-flex justify-content-center mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Save Student
+                            </button>
+                            <a href="{% url 'students:student_list' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-info-circle"></i> Help
+                </div>
+                <div class="card-body">
+                    <h6>Required Fields</h6>
+                    <p class="text-muted small">Fields marked with * are required and must be filled in.</p>
+                    
+                    <h6>Admission Number</h6>
+                    <p class="text-muted small">A unique identifier for this student. Use your school's naming convention.</p>
+                    
+                    <h6>Guardian Contact</h6>
+                    <p class="text-muted small">Ensure you have correct phone number and address for the guardian.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Reusable form styling
+document.addEventListener('DOMContentLoaded', function() {
+    const inputs = document.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        if (!input.classList.contains('form-control') && !input.classList.contains('form-select')) {
+            input.classList.add('form-control');
+        }
+    });
+});
+</script>
+{% endblock %}

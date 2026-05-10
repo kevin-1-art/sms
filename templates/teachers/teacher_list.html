@@ -1,0 +1,85 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Teachers - TSURI{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-md-8">
+                <h1><i class="bi bi-person-check"></i> Teacher Management</h1>
+            </div>
+            <div class="col-md-4 text-end">
+                <a href="{% url 'teachers:teacher_create' %}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Add New Teacher
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-9">
+                    <input type="text" name="search" class="form-control" placeholder="Search by name or employee ID..." value="{{ search_query }}">
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-outline-primary w-100">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-body">
+            {% if teachers %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Employee ID</th>
+                            <th>Qualification</th>
+                            <th>Specialization</th>
+                            <th>Classes</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for teacher in teachers %}
+                        <tr>
+                            <td>
+                                <strong>{{ teacher.user.get_full_name }}</strong><br>
+                                <small class="text-muted">{{ teacher.user.email }}</small>
+                            </td>
+                            <td>{{ teacher.employee_id }}</td>
+                            <td>{{ teacher.qualification }}</td>
+                            <td>{{ teacher.specialization }}</td>
+                            <td>{{ teacher.classes.count }}</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'teachers:teacher_detail' teacher.id %}" class="btn btn-sm btn-outline-primary" title="View">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{% url 'teachers:teacher_edit' teacher.id %}" class="btn btn-sm btn-outline-secondary" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'teachers:teacher_delete' teacher.id %}" class="btn btn-sm btn-outline-danger" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted text-center py-4">No teachers found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
